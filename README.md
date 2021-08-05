@@ -40,6 +40,6 @@ Enter the 4 digit game room: 5432
 
 ## AI Algorithms
 
-[ ] Minimax Algorithm  
-[x] Minimax with Alpha Beta Pruning Algorithm  
-[ ] Monte Carlo Algorithm  
+- [ ] Minimax Algorithm  
+- [x] Minimax with Alpha Beta Pruning Algorithm  
+- [ ] Monte Carlo Algorithm  
