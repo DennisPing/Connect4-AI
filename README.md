@@ -1,10 +1,12 @@
 # Connect4-AI
 
-Connect4 game with an AI opponent
+**CS-5100: Fundamentals of Artifical Intelligence**  
+**Dennis Ping**  
+**Madhu Patar**  
 
-CS-5100: Fundamentals of Artifical Intelligence  
-Dennis Ping  
-Madhu Patar  
+Play the game Connect4 against an AI opponent ft. online mode.
+
+[ 🤖 AI ] ↔️ [ connect-4.org ] ↔️ [ 😭 Unfortunate Human Player ]
 
 ## Requirements
 
@@ -16,27 +18,33 @@ numba
 selenium
 ```
 
-## Chromedriver
+## How It Works
 
-The AI needs a Google Chrome driver in order to control the web browser.
+The AI can use 3 different algorithms to play Connect 4:
 
-Please [download a Chromedriver](https://chromedriver.chromium.org/downloads) and place it in this current folder. MacOS, Windows, and Linux all use different Chromedrivers.
+  1. Minimax
+  2. Minimax Alpha Beta Pruning
+  3. Monte Carlo Search  
+
+The AI needs to be initiated by a human (*the AI is not sentient... yet*). The AI loads up a game instance on the website connect-4.org and gives back the game URL to the human handler. The human handler can then give the URL to anybody so they can against play the AI online.
 
 ## How to Run
 
 ```txt
-python connect4-fast.py
+python connect4-minimax.py             -- for Minimax
+python connect4-minimaxalphabeta.py    -- for Minimax Alpha Beta Pruning
+python connect4-montecarlo.py          -- for Monte Carlo Tree Search
 ```
 
-## Online Mode
+## Project Objectives
 
-This AI plays online on the website: https://connect-4.org
+Investigate the effeciency and performance of each algorithm my recording the number of nodes the algorithm searches through before determining its "best move" to play.
 
-The human always needs to create the game room, since the AI doesn't know how to create new rooms. Then, the human gives the AI the room code which lets the AI join the game. Wait a few seconds for the AI to load the browser, parse the HTML elements, and it's ready to play automatically!
+## Requirements for the Human Handler: Chromedriver
 
-```txt
-Enter the 4 digit game room: 5432
-```
+The AI needs a [Google chromedriver](https://chromedriver.chromium.org/downloads) in order to control the web browser.
+
+The `online-hander.py` script uses the appropriate chromedriver for Windows, Mac, or Linux. At the time of writing, the Google Chrome version is `Chrome version 92`. If you are using a newer Chrome version, please overwrite the existing chromedriver in the folder `/chromedrivers`.
 
 ## AI Algorithms
 
