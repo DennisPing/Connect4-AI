@@ -42,7 +42,7 @@ def get_next_open_row(board:np.ndarray, col:int) -> int:
 
 @njit
 def check_for_win(board:np.ndarray, piece:int) -> bool:
-    """ Check for 4 in a row """
+    """ Check for 4 in a row via brute force """
     # check horizontal locations for a win
     for r in range(6):
         for c in range(7 - 3):
@@ -70,7 +70,15 @@ def check_for_win(board:np.ndarray, piece:int) -> bool:
 
 @njit
 def evaluate_position(board:np.ndarray, piece:int) -> int:
-    """ Score the current position of the board """
+    """ Calculate the score of the current board via brute force
+
+    Args:
+        board (np.ndarray): game board
+        piece (int): the player being scored (human or AI)
+
+    Returns:
+        int: the score of the current board state
+    """
     score = 0
     num_rows = board.shape[0]
     num_cols = board.shape[1]
@@ -104,7 +112,15 @@ def evaluate_position(board:np.ndarray, piece:int) -> int:
 
 @njit
 def score_window(window:List[int], piece:int) -> int:
-    """ Score a specific 4 square window """
+    """ Quantify a 4 block window
+
+    Args:
+        window (List[int]): a 4 block window
+        piece (int): the player being scored
+
+    Returns:
+        int: the score of this window
+    """
     score = 0
     opponent_piece = piece % 2 + 1
 
@@ -129,7 +145,18 @@ def score_window(window:List[int], piece:int) -> int:
 
 @njit
 def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> Tuple[int, int]:
+    """ Implementation of Minimax Alpha Beta Pruning
 
+    Args:
+        board (np.ndarray): game board
+        depth (int): recursive search depth
+        alpha (int): initialized as negative infinity
+        beta (int): initialized as positive infinity
+        maxTurn (bool): True if it's max turn; False if it's min turn
+
+    Returns:
+        Tuple[int, int]: best_column, best_score
+    """
     PLAYER_PIECE = 1
     AI_PIECE = 2
     WIN_SCORE = 1000000
@@ -257,7 +284,7 @@ def start_game():
     game_over = False
     rounds = 0
     depth = 5
-    HUMAN_TURN = get_player_turn(driver)
+    HUMAN_TURN = get_player_turn(driver) # ONLINE FEATURE
     while not game_over:
         rounds += 1
         while HUMAN_TURN:
