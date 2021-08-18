@@ -6,7 +6,7 @@
 
 Play the game Connect4 against an AI opponent ft. online mode.
 
-[ 🤖 AI ] ↔️ [ connect-4.org ] ↔️ [ 😭 Unfortunate Human Player ]
+🤖 AI <---> connect-4.org <---> 😭 Unfortunate Human Player
 
 ## Requirements
 

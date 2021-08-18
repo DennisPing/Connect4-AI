@@ -9,19 +9,23 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 def create_board() -> np.ndarray:
+    """ Create a board of 6 rows x 7 columns """
     return np.zeros((6, 7))
 
 @njit
 def drop_piece(board:np.ndarray, row:int, col:int, piece:int) -> np.ndarray:
+    """ Place the piece on the board at coordinates [row, col] """
     board[row, col] = piece
     return board
 
 @njit
 def is_valid_column(board:np.ndarray, col:int) -> bool:
+    """ Check if this is column is not full """
     return board[board.shape[0] - 1, col] == 0
 
 @njit
 def get_valid_columns(board:np.ndarray) -> List[int]:
+    """ Get a list of all non-full columns """
     valid_locations = []
     for col in typed.List([3,4,2,5,1,6,0]): # Favor middle columns to be better
         if is_valid_column(board, col):
@@ -30,6 +34,7 @@ def get_valid_columns(board:np.ndarray) -> List[int]:
 
 @njit
 def get_next_open_row(board:np.ndarray, col:int) -> int:
+    """ Get the next open row index in this column """
     for row in range(board.shape[0]):
         if board[row, col] == 0:
             return row
@@ -37,6 +42,7 @@ def get_next_open_row(board:np.ndarray, col:int) -> int:
 
 @njit
 def check_for_win(board:np.ndarray, piece:int) -> bool:
+    """ Check for 4 in a row """
     # check horizontal locations for a win
     for r in range(6):
         for c in range(7 - 3):
@@ -64,6 +70,7 @@ def check_for_win(board:np.ndarray, piece:int) -> bool:
 
 @njit
 def evaluate_position(board:np.ndarray, piece:int) -> int:
+    """ Score the current position of the board """
     score = 0
     num_rows = board.shape[0]
     num_cols = board.shape[1]
@@ -97,6 +104,7 @@ def evaluate_position(board:np.ndarray, piece:int) -> int:
 
 @njit
 def score_window(window:List[int], piece:int) -> int:
+    """ Score a specific 4 square window """
     score = 0
     opponent_piece = piece % 2 + 1
 
