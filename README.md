@@ -4,9 +4,11 @@
 **Dennis Ping**  
 **Madhu Patar**  
 
-Play the game Connect4 against an AI opponent ft. online mode.
+Play the game Connect4 against an AI opponent ft. offline and online mode.
 
-🤖 AI <---> connect-4.org <---> 😭 Unfortunate Human Player
+🤖 AI <---> local terminal <---> 👨‍💻 Human Player
+
+🤖 AI <---> connect-4.org <---> 👩‍💻 Human Player
 
 ## Requirements
 
@@ -16,6 +18,7 @@ numpy
 beautifulsoup4
 numba
 selenium
+colorama
 ```
 
 ## How It Works
@@ -30,10 +33,28 @@ The AI needs to be initiated by a human (*the AI is not sentient... yet*). The A
 
 ## How to Run
 
+### Basic Minimax
+
 ```txt
-python connect4-minimax.py             -- for Minimax
-python connect4-minimaxalphabeta.py    -- for Minimax Alpha Beta Pruning
-python connect4-montecarlo.py          -- for Monte Carlo Tree Search
+python connect4-minimax.py
+```
+
+### Minimax Alpha Beta Pruning
+
+```txt
+python connect4-minimaxalphabeta.py
+```
+
+### Monte Carlo Tree Search
+
+```txt
+python connect4-montecarlo.py
+```
+
+### Minimax Alpha Beta Pruning using Bitboard
+
+```txt
+python connect4-bitboard.py
 ```
 
 ## Project Objectives
@@ -48,6 +69,6 @@ The `online-hander.py` script uses the appropriate chromedriver for Windows, Mac
 
 ## AI Algorithms
 
-- [ ] Minimax Algorithm  
+- [x] Minimax Algorithm  
 - [x] Minimax with Alpha Beta Pruning Algorithm  
 - [ ] Monte Carlo Algorithm  
