@@ -12,9 +12,9 @@ class Game:
 
     def __init__(self):
         self.current_state = State(0, 0)
-        self.turn = self.AI
+        self.turn = self.PLAYER
         self.first = self.turn
-        self.rounds = 1
+        self.rounds = 0
         self.depth = 7
         self.node_count = 0
         self.compute_time = 0
@@ -39,11 +39,11 @@ class Game:
 
     def next_turn(self):
         if self.turn == self.AI:
+            self.rounds += 1
             if self.rounds % 5 == 0 and self.depth < 10:
                 self.depth += 1
             self.query_AI(self.depth)
         else:
-            self.rounds += 1
             self.query_player()
 
         # self.turn = (self.turn + 1) % 2
@@ -52,7 +52,6 @@ class Game:
 
     def query_player(self):
         """Make a move by querying standard input."""
-        print("\nPlayer's Move...")
         column = None
         while column is None:
             try:
@@ -133,7 +132,6 @@ if __name__ == "__main__":
     print("Welcome to Connect Four!")
 
     while True:
-        # Set up a blank board data structure.
         game = Game()
         while not game.is_game_over():
             game.next_turn()
