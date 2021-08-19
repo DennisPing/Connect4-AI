@@ -174,7 +174,8 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool, node
 
     # If search depth == 0 -> Stop recursing and return the minimax score
     if depth == 0:
-        return typed.List([0, evaluate_position(board, AI_PIECE), node_count + 1])
+        bestCol = get_valid_columns(board)[0]
+        return typed.List([bestCol, evaluate_position(board, AI_PIECE), node_count])
     
     if maxTurn:
         value = -sys.maxsize
@@ -210,7 +211,7 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool, node
                 break
         return typed.List([bestCol, value, node_count + 1])
 
-def pretty_print_board(gridboard, rounds, depth, node_count, computation_time):
+def pretty_print_board(gridboard, rounds, depth, node_count, computation_time, endgame):
 
     #clear console/terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -218,6 +219,8 @@ def pretty_print_board(gridboard, rounds, depth, node_count, computation_time):
     print(f"AI search depth: {depth}")
     print(f"Nodes searched: {node_count}")
     print(f"Computation time: {computation_time} sec")
+    if endgame:
+        print(endgame)
     #emptyLocations = 42 - np.count_nonzero(self.gridboard) #get empty locations
     # print('')
     #print(YELLOW + '         ROUND #' + str(emptyLocations) + WHITE, end=" ")   #print round number
@@ -254,6 +257,7 @@ def start_game():
     computation_time = 0
     while not game_over:
         rounds += 1
+        endgame = ''
         if HUMAN_TURN:
             col = int(input("Player 1 make your selection (1-7): "))
             col = col - 1 # Humans read from 1-7 but computers read from base 0 (0-6)
@@ -262,7 +266,7 @@ def start_game():
                 board = drop_piece(board, row, col, PLAYER_PIECE)
 
                 if check_for_win(board, PLAYER_PIECE):
-                    print("Player 1 wins!")
+                    endgame = "Player 1 wins!"
                     game_over = True
 
         if not HUMAN_TURN:
@@ -272,19 +276,19 @@ def start_game():
             col, score, node_count = minimax(board, depth, -sys.maxsize, sys.maxsize, True, 0)
             computation_time = round(time.time() - t1, 2)
             if score == -1: # Check for tie
-                print("Tie!")
+                endgame = "Tie!"
                 game_over = True
             row = get_next_open_row(board, col)
             board = drop_piece(board, row, col, AI_PIECE)
 
             if check_for_win(board, AI_PIECE):
-                print("Player 2 wins!")
+                endgame = "Player 2 wins!"
                 game_over = True
-            pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time)
+            pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time, endgame)
 
         HUMAN_TURN = not HUMAN_TURN
 
-    pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time)
+    pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time, endgame)
 
 if __name__ == "__main__":
     start_game()
