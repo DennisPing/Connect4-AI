@@ -1,8 +1,10 @@
 import numpy as np
 import sys
+import os
 import time
 from typing import List, Tuple
 from numba import njit, typed
+from colorama import Fore
 
 def create_board() -> np.ndarray:
     return np.zeros((6, 7))
@@ -33,11 +35,6 @@ def get_next_open_row(board:np.ndarray, col:int) -> int:
         if board[row, col] == 0:
             return row
     return -1
-
-# @njit
-# def print_board( board:np.ndarray) -> str:
-#     print(np.flipup(board))
-#     print()
 
 @njit
 def check_for_win(board:np.ndarray, piece:int) -> bool:
@@ -140,9 +137,8 @@ def score_window(window:List[int], piece:int) -> int:
         score -= 6
     return score 
 
-# @njit(types.UniTuple(types.int64, 2)(types.int64[::1], types.int64, types.int64, types.int64, types.boolean))
 @njit
-def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> Tuple[int, int]:
+def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool, node_count:int) -> Tuple[int, int, int]:
     """ Implementation of Minimax Alpha Beta Pruning
 
     Args:
@@ -151,9 +147,10 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
         alpha (int): initialized as negative infinity
         beta (int): initialized as positive infinity
         maxTurn (bool): True if it's max turn; False if it's min turn
+        node_count (int): The accumulator node_count
 
     Returns:
-        Tuple[int, int]: best_column, best_score
+        Tuple[int, int, int]: best_column, best_score, node_count
     """
 
     PLAYER_PIECE = 1
@@ -165,19 +162,19 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
     # First, check for possible winning move -> Stop recursing and return the minimax score
     if check_for_win(board, PLAYER_PIECE):
         score = WIN_SCORE + depth * AGING_PENALTY # If there are multiple win possibilites, choose the faster one.
-        return typed.List([0, score])
+        return typed.List([0, score, node_count])
 
     if check_for_win(board, AI_PIECE):
         score = -WIN_SCORE - depth * AGING_PENALTY # If there are multiple win possibilites, choose the faster one.
-        return typed.List([0, score])
+        return typed.List([0, score, node_count])
 
     # If the board is full -> return tie
     if len(get_valid_columns(board)) == 0:
-        return typed.List([0, TIE])
+        return typed.List([0, TIE, node_count])
 
     # If search depth == 0 -> Stop recursing and return the minimax score
     if depth == 0:
-        return typed.List([0, evaluate_position(board, AI_PIECE)])
+        return typed.List([0, evaluate_position(board, AI_PIECE), node_count + 1])
     
     if maxTurn:
         value = -sys.maxsize
@@ -186,7 +183,7 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
             row = get_next_open_row(board, col)
             temp_board = np.copy(board)
             temp_board[row, col] = PLAYER_PIECE
-            score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
+            _, score, node_count = minimax(temp_board, depth - 1, alpha, beta, False, node_count)
             
             if score > value:
                 value = score
@@ -194,7 +191,7 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
             alpha = max(alpha, value)
             if alpha >= beta:
                 break
-        return typed.List([bestCol, value])
+        return typed.List([bestCol, value, node_count + 1])
     
     else:
         value = sys.maxsize
@@ -203,7 +200,7 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
             row = get_next_open_row(board, col)
             temp_board = np.copy(board)
             temp_board[row, col] = AI_PIECE
-            score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
+            _, score, node_count = minimax(temp_board, depth - 1, alpha, beta, True, node_count)
     
             if score < value:
                 value = score
@@ -211,7 +208,36 @@ def minimax(board:np.ndarray, depth:int, alpha:int, beta:int, maxTurn:bool) -> T
             beta = min(beta, value)
             if alpha >= beta:
                 break
-        return typed.List([bestCol, value])
+        return typed.List([bestCol, value, node_count + 1])
+
+def pretty_print_board(gridboard, rounds, depth, node_count, computation_time):
+
+    #clear console/terminal screen
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"Game round: {rounds}")
+    print(f"AI search depth: {depth}")
+    print(f"Nodes searched: {node_count}")
+    print(f"Computation time: {computation_time} sec")
+    #emptyLocations = 42 - np.count_nonzero(self.gridboard) #get empty locations
+    # print('')
+    #print(YELLOW + '         ROUND #' + str(emptyLocations) + WHITE, end=" ")   #print round number
+    # print('')
+    print('')
+    print("\t      1   2   3   4   5   6   7 ")
+    print("\t      -   -   -   -   -   -   - ")
+
+    for r in range(gridboard.shape[0]):
+        print("\t", 6-r,' ', end="")
+        for c in range(gridboard.shape[1]):
+            if gridboard[r, c] == 2:
+                print("| " + Fore.BLUE + 'x' + Fore.RESET, end=" ")   #print colored 'x'
+            elif gridboard[r, c] == 1:
+                print("| " + Fore.RED + 'o' + Fore.RESET, end=" ")   #print colored 'o'
+            else:
+                print("| " + ' ', end=" ")
+
+        print("|")
+    print('')
 
 def start_game():
     """ Initialize the game and play the game until the game is over.
@@ -223,9 +249,11 @@ def start_game():
 
     board = create_board()
     game_over = False
-
+    rounds = 0
+    depth = 6
+    computation_time = 0
     while not game_over:
-        
+        rounds += 1
         if HUMAN_TURN:
             col = int(input("Player 1 make your selection (1-7): "))
             col = col - 1 # Humans read from 1-7 but computers read from base 0 (0-6)
@@ -239,19 +267,24 @@ def start_game():
 
         if not HUMAN_TURN:
             t1 = time.time()
-            col = minimax(board, 8, -sys.maxsize, sys.maxsize, True)[0]
-            print(round(time.time() - t1), 3)
+            if rounds % 5 == 0 and depth < 10: # Cap the search depth at 10.
+                depth += 1
+            col, score, node_count = minimax(board, depth, -sys.maxsize, sys.maxsize, True, 0)
+            computation_time = round(time.time() - t1, 2)
+            if score == -1: # Check for tie
+                print("Tie!")
+                game_over = True
             row = get_next_open_row(board, col)
             board = drop_piece(board, row, col, AI_PIECE)
 
             if check_for_win(board, AI_PIECE):
                 print("Player 2 wins!")
                 game_over = True
-            print(np.flipud(board))
+            pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time)
 
         HUMAN_TURN = not HUMAN_TURN
 
-    print(np.flipud(board)) # Print the final board
+    pretty_print_board(np.flipud(board), rounds, depth, node_count, computation_time)
 
 if __name__ == "__main__":
     start_game()
