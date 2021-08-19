@@ -33,28 +33,34 @@ The AI needs to be initiated by a human (*the AI is not sentient... yet*). The A
 
 ## How to Run
 
+### ✅ Install Requirements
+
+```txt
+python -m pip install -r requirements.txt
+```
+
 ### 1️⃣ Basic Minimax
 
 ```txt
-python connect4-minimax.py
+python play_minimax_basic.py
 ```
 
-###  2️⃣ Minimax Alpha Beta Pruning
+### 2️⃣ Minimax Alpha Beta Pruning
 
 ```txt
-python connect4-minimaxalphabeta.py
+python play_minimax_alphabeta.py
 ```
 
 ### 3️⃣ Monte Carlo Tree Search
 
 ```txt
-python connect4-montecarlo.py
+python play_montecarlo.py
 ```
 
 ### 4️⃣ Minimax Alpha Beta Pruning using Bitboard
 
 ```txt
-python connect4-bitboard.py
+python play_bitboard.py
 ```
 
 ## Project Objectives
