@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from time import time
 from game_state import State
 from minimax_alphabeta import alphabeta_search
 from minimax import basic_minimax
@@ -16,6 +17,7 @@ class Game:
         self.rounds = 1
         self.depth = 7
         self.node_count = 0
+        self.compute_time = 0
 
     def is_game_over(self):
         if self.has_winning_state():
@@ -23,7 +25,7 @@ class Game:
             print("AI Bot won!") if ~self.turn == self.AI else print("Congratulations, you won!")
             return True
         elif self.draw():
-            print("Draw...Thank you...come again")
+            print("Draw. No winner.")
             return True
         return False
 
@@ -73,8 +75,10 @@ class Game:
         """ AI Bot chooses next best move from current state """
         #print("\nAI's Move...")
         # temp_position = self.current_state.ai_bitboard
-        # self.current_state, node_count = alphabeta_search(self.current_state, self.first, d=depth)
-        self.current_state, node_count = basic_minimax(self.current_state, self.first, d=depth)
+        t1 = time()
+        self.current_state, node_count = alphabeta_search(self.current_state, self.first, d=depth)
+        self.compute_time = round(time() - t1, 2)
+        # self.current_state, node_count = basic_minimax(self.current_state, self.first, d=depth)
         self.node_count = node_count
         # Get column for GUI
         # column = temp_position ^ self.current_state.ai_bitboard
@@ -87,6 +91,7 @@ class Game:
         print(f"Game rounds: {self.rounds}")
         print(f"AI search depth: {self.depth}")
         print(f"Nodes searched: {self.node_count}")
+        print(f"Compute time: {self.compute_time} sec")
         #emptyLocations = 42 - np.count_nonzero(self.gridboard) #get empty locations
         # print('')
         #print(YELLOW + '         ROUND #' + str(emptyLocations) + WHITE, end=" ")   #print round number
@@ -96,16 +101,12 @@ class Game:
         print("\t      -   -   -   -   -   -   - ")
 
         for r in range(gridboard.shape[0]):
-            print("\t", r+1,' ', end="")
+            print("\t", 6-r,' ', end="")
             for c in range(gridboard.shape[1]):
                 if gridboard[r, c] == 2:
                     print("| " + Fore.BLUE + 'x' + Fore.RESET, end=" ")   #print colored 'x'
                 elif gridboard[r, c] == 1:
                     print("| " + Fore.RED + 'o' + Fore.RESET, end=" ")   #print colored 'o'
-                # elif str(gridboard[i][j]) == 'X':
-                #     print("| " + BLUE_BG + str(gridboard[i][j]) + WHITE, end=" ")   #print colored 'X'
-                # elif str(gridboard[i][j]) == 'O':
-                #     print("| " + RED_BG + str(gridboard[i][j]) + WHITE, end=" ")   #print colored 'O'
                 else:
                     print("| " + ' ', end=" ")
 

@@ -3,12 +3,11 @@ import numpy as np
 
 class State:
 
-    status = 3
+    status = 3 # Set an arbitrary status number 
 
     def __init__(self, ai_bitboard, game_bitboard, depth=0):
         self.ai_bitboard = ai_bitboard
         self.game_bitboard = game_bitboard
-        # self.human_bitboard = ai_bitboard ^ game_bitboard
         self.depth = depth
 
     @property

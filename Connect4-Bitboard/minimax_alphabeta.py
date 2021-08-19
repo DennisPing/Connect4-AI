@@ -55,7 +55,7 @@ def alphabeta_search(state, turn=-1, d=7):
     beta = sys.maxsize
     best_action = None
     for child in state.generate_children(turn):
-        v, cnt = min_value(child, best_score, beta, 1, 0)
+        v, cnt = min_value(child, best_score, beta, 1, 0) # Initialize node_count == 0
         if v > best_score:
             best_score = v
             best_action = child
