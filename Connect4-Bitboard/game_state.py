@@ -100,23 +100,6 @@ class State:
     def __eq__(self, other):
         return (self.ai_bitboard, self.game_bitboard, self.depth % 2) == (
             other.ai_bitboard, other.game_bitboard, other.depth % 2)
-
-    # def bitboard_to_array(self, ai_bitboard: int, human_bitboard: int) -> np.ndarray:
-    #     output = np.zeros((49,), dtype=np.int8)
-    #     for i in range(49):
-    #         is_played = (ai_bitboard >> i) & 1
-    #         if is_played:
-    #             player = (human_bitboard >> i) & 1
-    #             output[i] = 1 if player == 0 else 2
-    #     return output.reshape((7,7))
-    
-    # def bitboard_to_array(self, bitboard):
-    #     s = 7 * np.arange(6, -1, -1, dtype=np.uint64)
-    #     print(s)
-    #     b = (bitboard >> s).astype(np.uint8)
-    #     print(b)
-    #     b = np.unpackbits(b, bitorder="little")
-    #     return b.reshape(7, 7)
     
     def make_move(self, position, mask, col):
         """ Helper method to make a move and return new position along with new board position """

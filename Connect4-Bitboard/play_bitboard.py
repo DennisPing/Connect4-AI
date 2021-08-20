@@ -45,9 +45,6 @@ class Game:
             self.query_AI(self.depth)
         else:
             self.query_player()
-
-        # self.turn = (self.turn + 1) % 2
-        # Apply one's complement (invert bits); 0 ~= -1
         self.turn = ~self.turn
 
     def query_player(self):
@@ -72,16 +69,11 @@ class Game:
 
     def query_AI(self, depth):
         """ AI Bot chooses next best move from current state """
-        #print("\nAI's Move...")
-        # temp_position = self.current_state.ai_bitboard
         t1 = time()
         self.current_state, node_count = alphabeta_search(self.current_state, self.first, d=depth)
         self.compute_time = round(time() - t1, 2)
         # self.current_state, node_count = basic_minimax(self.current_state, self.first, d=depth)
         self.node_count = node_count
-        # Get column for GUI
-        # column = temp_position ^ self.current_state.ai_bitboard
-        # column = (column.bit_length() - 1) // 7
 
     def pretty_print_board(self, gridboard):
 
@@ -91,10 +83,6 @@ class Game:
         print(f"AI search depth: {self.depth}")
         print(f"Nodes searched: {self.node_count}")
         print(f"Compute time: {self.compute_time} sec")
-        #emptyLocations = 42 - np.count_nonzero(self.gridboard) #get empty locations
-        # print('')
-        #print(YELLOW + '         ROUND #' + str(emptyLocations) + WHITE, end=" ")   #print round number
-        # print('')
         print('')
         print("\t      1   2   3   4   5   6   7 ")
         print("\t      -   -   -   -   -   -   - ")
