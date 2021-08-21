@@ -67,6 +67,12 @@ python play_bitboard.py
 
 Investigate the effeciency and performance of each algorithm my recording the number of nodes the algorithm searches through before determining its "best move" to play.
 
+## Example Output
+
+![img01](./images/bitboard-01.png)
+
+![img02](./images/bitboard-02.png)
+
 ## Requirements for the Human Handler: Chromedriver
 
 The AI needs a [Google chromedriver](https://chromedriver.chromium.org/downloads) in order to control the web browser.
@@ -77,4 +83,4 @@ The `online-hander.py` script uses the appropriate chromedriver for Windows, Mac
 
 - [x] Minimax Algorithm  
 - [x] Minimax with Alpha Beta Pruning Algorithm  
-- [ ] Monte Carlo Algorithm  
+- [x] Monte Carlo Algorithm  
